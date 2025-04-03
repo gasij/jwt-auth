@@ -1,0 +1,78 @@
+    Sub CreateCraftDumplingsPresentation()
+        Dim pptApp As PowerPoint.Application
+        Dim pptPres As PowerPoint.Presentation
+        Dim pptSlide As PowerPoint.Slide
+        Dim shp As Shape
+        Dim i As Integer
+        
+        ' Создаем новое приложение PowerPoint
+        Set pptApp = New PowerPoint.Application
+        pptApp.Visible = True
+        Set pptPres = pptApp.Presentations.Add
+        
+        ' Настройка цветовой схемы (упрощенная версия)
+        With pptPres.Designs(1).SlideMaster
+            .ColorScheme.Colors(ppTitle).RGB = RGB(150, 0, 0)  ' Бордовый для заголовков
+            .ColorScheme.Colors(ppAccent1).RGB = RGB(70, 70, 70)  ' Темно-серый для текста
+        End With
+        
+        ' Слайд 1 - Титульный
+        Set pptSlide = pptPres.Slides.Add(1, ppLayoutTitle)
+        With pptSlide
+            .Shapes.Title.TextFrame.TextRange.Text = "Ремесленные вареники"
+            .Shapes.Placeholders(2).TextFrame.TextRange.Text = "Традиции ручной лепки от Алексеича & Маруси"
+            .FollowMasterBackground = False
+            .Background.Fill.ForeColor.RGB = RGB(255, 240, 220)  ' Кремовый фон
+            
+            ' Добавляем изображение (убедитесь, что путь правильный)
+            On Error Resume Next  ' Пропустить ошибку, если изображение не найдено
+            .Shapes.AddPicture "C:\temp\dumplings.png", msoFalse, msoTrue, 300, 150, 200, 200
+            On Error GoTo 0
+        End With
+        
+        ' Слайд 2 - История (упрощенный вариант)
+        Set pptSlide = pptPres.Slides.Add(2, ppLayoutText)
+        With pptSlide
+            .Shapes.Title.TextFrame.TextRange.Text = "История ремесленных вареников"
+            .Shapes.Placeholders(2).TextFrame.TextRange.Text = _
+                "• Традиции с XV века" & vbNewLine & _
+                "• Секреты деревенских рецептов" & vbNewLine & _
+                "• Ручная лепка - как искусство"
+        End With
+        
+        ' Слайд 3 - Процесс производства (упрощенный)
+        Set pptSlide = pptPres.Slides.Add(3, ppLayoutTwoColumnText)
+        With pptSlide
+            .Shapes.Title.TextFrame.TextRange.Text = "Наш процесс"
+            .Shapes.Placeholders(2).TextFrame.TextRange.Text = _
+                "1. Отбор натуральных ингредиентов" & vbNewLine & _
+                "2. Замес теста по старинному рецепту" & vbNewLine & _
+                "3. Ручная лепка каждой штучки"
+            .Shapes.Placeholders(3).TextFrame.TextRange.Text = _
+                "4. Контроль качества" & vbNewLine & _
+                "5. Быстрая заморозка" & vbNewLine & _
+                "6. Упаковка с любовью"
+        End With
+        
+        ' Слайд 4 - Контакты
+        Set pptSlide = pptPres.Slides.Add(4, ppLayoutTitleOnly)
+        With pptSlide
+            .Shapes.Title.TextFrame.TextRange.Text = "Наши контакты"
+            Dim textBox As Shape
+            Set textBox = .Shapes.AddTextbox(msoTextOrientationHorizontal, 100, 150, 500, 200)
+            textBox.TextFrame.TextRange.Text = _
+                "Алексеич & Маруся" & vbNewLine & _
+                "Ремесленная мастерская вареников" & vbNewLine & vbNewLine & _
+                "Телефон: +7 (XXX) XXX-XX-XX" & vbNewLine & _
+                "Email: craft@vareniki.ru" & vbNewLine & _
+                "Адрес: ул. Домашняя, 15"
+            textBox.TextFrame.TextRange.Font.Size = 24
+        End With
+        
+        ' Сохраняем презентацию
+        Dim savePath As String
+        savePath = Environ("USERPROFILE") & "\Desktop\Ремесленные вареники.pptx"
+        pptPres.SaveAs savePath
+        
+        MsgBox "Презентация успешно создана и сохранена на рабочем столе!", vbInformation
+    End Sub
